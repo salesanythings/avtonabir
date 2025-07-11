@@ -1168,45 +1168,58 @@ src="https://www.facebook.com/tr?id=1422075022132010&ev=PageView&noscript=1"
             
                     
                   <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    document.getElementById('order61').addEventListener('submit', function(e) {
-                        e.preventDefault(); // Запобігаємо стандартній відправці форми
-                     
-                        // Отримуємо значення полів форми
-                        var name = document.querySelector('input[name="name2"]').value;
-                        var phone = document.querySelector('input[name="phone2"]').value;
-			var color = document.querySelector('select[name="color2"]').value;
-                     
-                   // Формуємо повідомлення
-var message = `(✨АВТО_НАБІР✨) Нове замовлення 📦:\n👤 Ім'я та прізвище: ${name}\n📞 Телефон: ${phone}\n🔢 Кількість: ${color}`;
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('order61').addEventListener('submit', function (e) {
+        e.preventDefault(); // Запобігаємо стандартній відправці форми
 
-                        // Ваш токен та ID чату
-                        var token = '7869673817:AAHBO54deA6oUtgPZdH9ytHRWlF_5lIX9BY';
-                        var chatId = 326093985; 
-                     
-                        // Відправляємо повідомлення через Telegram API
-                        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "Markdown" })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Успішно відправлено:', data);
-                        if (data.ok) {
-                            // Після успішної відправки, переходимо на сторінку "Дякую"
-                            window.location.href = "./avtonabir_files/thank_you_page.html";
-                        } else {
-                            alert('Помилка при відправленні замовлення. Спробуйте ще раз.');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Помилка:', error);
-                        alert('Помилка при відправленні замовлення.');
-                    });
-                });
-            });
-            </script>
+        // Отримуємо значення полів форми
+        var name = document.querySelector('input[name="name2"]').value.trim();
+        var phone = document.querySelector('input[name="phone2"]').value.trim();
+        var color = document.querySelector('select[name="color2"]').value;
+
+        // Формуємо повідомлення
+        var message = `(✨АВТО_НАБІР✨) Нове замовлення 📦:\n👤 Ім'я та прізвище: ${name}\n📞 Телефон: ${phone}\n🔢 Кількість: ${color}`;
+
+        // Ваш токен та ID чату
+        var token = '7702858497:AAHkYy0UzzjIuTpeHyEycr_zKHGb2qqu3I0';
+        var chatId = 326093985;
+
+        // Відправляємо повідомлення через Telegram API
+        fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: "Markdown"
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Мережева помилка: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.ok) {
+                console.log('✅ Повідомлення надіслано:', data);
+                // Редірект після успішного надсилання
+                window.location.href = "avtonabir_files/thank_you_page.html";
+            } else {
+                console.error('❌ Telegram API помилка:', data);
+                alert('Помилка від Telegram: ' + (data.description || 'невідома'));
+            }
+        })
+        .catch((error) => {
+            console.error('❌ Помилка надсилання:', error);
+            alert('Не вдалося надіслати замовлення. Спробуйте ще раз.');
+        });
+    });
+});
+</script>
+
             
             <form id="order61" class="order_form" action="https://salesanythings.github.io/avtonabir/avtonabir_files/thank_you_page.html">
                 <input class="field" type="text" name="name2" placeholder="Введіть Ваше ім&#39;я та прізвище" required="">
