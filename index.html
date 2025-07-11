@@ -1185,29 +1185,27 @@ var message = `(✨АВТО_НАБІР✨) Нове замовлення 📦:\n
                         var chatId = 326093985; 
                      
                         // Відправляємо повідомлення через Telegram API
-                        fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                chat_id: chatId,
-                                text: message,
-                                parse_mode: "Markdown"
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Success:', data);
-                            // Перенаправлення на сторінку подяки після успішного замовлення
-                            window.location.href = "./avtonabir_files/thank_you_page.html"; 
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                            alert('Помилка при відправленні замовлення.');
-                        });
+                        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "Markdown" })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Успішно відправлено:', data);
+                        if (data.ok) {
+                            // Після успішної відправки, переходимо на сторінку "Дякую"
+                            window.location.href = "./avtonabir_files/thank_you_page.html";
+                        } else {
+                            alert('Помилка при відправленні замовлення. Спробуйте ще раз.');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Помилка:', error);
+                        alert('Помилка при відправленні замовлення.');
                     });
                 });
+            });
             </script>
             
             <form id="order61" class="order_form" action="https://salesanythings.github.io/avtonabir/avtonabir_files/thank_you_page.html">
